@@ -2,7 +2,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug, Clone)]
 pub enum Error {
-    #[error("usage: tricoder")]
+    #[error("usage: tricoder use it this way")]
     CliUsage,
     #[error("Reqwest: {0}")]
     Reqwest(String),

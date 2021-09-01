@@ -1,12 +1,22 @@
 mod error;
-
 pub use error::Error;
+
+mod subdomains;
+mod model;
+use model::Subdomain;
+
+mod ports;
+mod common_ports;
+
 use std::env;
 use std::time::Duration;
-use reqwest::{Client, redirect};
+use reqwest::{blocking::Client, redirect};
+use anyhow::Result;
 
+use std::vec::Vec;
 
-fn main() -> Result<(), anyhow::Error> {
+fn main() -> Result<()> {
+// fn main() -> Result<(), anyhow::Error> {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
@@ -25,13 +35,22 @@ fn main() -> Result<(), anyhow::Error> {
         .num_threads(256)
         .build()?;
 
+    // pool.install is required to use our custom threadpool, instad of rayon's default one
     pool.install(|| {
         let scan_result: Vec<Subdomain> = subdomains::enumerate(&http_client, target)
             .unwrap()
             .into_par_iter()
             .map(ports::scan_ports)
             .collect();
-    })
+
+        for subdomain in scan_result {
+            println!("{}:", &subdomain.domain);
+            for port in &subdomain.open_ports {
+                println!("{}", port.port)
+            }
+            println!("");
+        }
+    });
 
     Ok(())
 }
