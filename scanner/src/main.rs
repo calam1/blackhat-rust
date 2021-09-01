@@ -14,6 +14,7 @@ use reqwest::{blocking::Client, redirect};
 use anyhow::Result;
 
 use std::vec::Vec;
+use rayon::prelude::*;
 
 fn main() -> Result<()> {
 // fn main() -> Result<(), anyhow::Error> {
