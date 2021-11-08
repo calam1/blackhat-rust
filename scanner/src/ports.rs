@@ -25,7 +25,7 @@ fn scan_port(hostname: &str, port: u16) -> Port {
 
     if socket_addresses.len() == 0 {
         return Port {
-            port: port,
+            port,
             is_open: false,
         };
     }
@@ -37,7 +37,7 @@ fn scan_port(hostname: &str, port: u16) -> Port {
     };
 
     Port {
-        port: port,
+        port,
         is_open,
     }
 }
